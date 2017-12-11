@@ -1,0 +1,59 @@
+<div class="fixed-toolbar drag">
+  <mat-toolbar color="primary">
+    <span>ClipClip</span>&nbsp;&nbsp;
+    <i></i>
+    <button mat-icon-button color="accent" (click)="issues()" class="no-drag" title="File a bug report."><mat-icon>bug_report</mat-icon></button>
+    <button mat-icon-button color="accent" (click)="hide()" class="no-drag"
+        title="Hide ( Escape ). Click tray icon to show again or use ( {{ shortcut }} ). Use standard shortcut to quit."><mat-icon>blur_on</mat-icon></button>
+    <!--button mat-icon-button (click)="quit()" class="no-drag" title="Close window and exit ClipClip."><mat-icon>clear</mat-icon></button-->
+  </mat-toolbar>
+  <mat-toolbar class="mat-elevation-z1">
+    <mat-checkbox class="no-drag" [(ngModel)]="images">images</mat-checkbox>
+    <i></i>
+    <mat-button-toggle-group class="no-drag" [(ngModel)]="filter">
+      <mat-button-toggle [value]="TEXT_PLAIN" title="Text">
+        <mat-icon>short_text</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle [value]="BOTH" title="All">
+        <mat-icon>accessibility</mat-icon>
+      </mat-button-toggle>
+      <mat-button-toggle [value]="IMAGE_PNG" title="Images">
+        <mat-icon>image</mat-icon>
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+    <i></i>
+    <mat-chip-list><mat-chip color="accent" selected="true">{{filtredClips.length}} of {{clips.length}} of {{historySize}}</mat-chip></mat-chip-list>&nbsp;&nbsp;
+    <mat-select class="no-drag" [(ngModel)]="historySize" (change)="trimToHistorySize()">
+      <mat-option *ngFor="let hs of historySizes" [value]="hs">{{hs}}</mat-option>
+    </mat-select>
+  </mat-toolbar>
+</div>
+<div class="container">
+  <mat-card *ngFor="let clip of filtredClips; let first = first;let last = last;let i = index;let odd = odd;" [class.odd]="odd">
+    <mat-card-subtitle [style.text-align]="'right'">( {{ clip.format }} )&nbsp;&nbsp;&nbsp;&nbsp;{{clip.timestamp | date:'medium'}}</mat-card-subtitle>
+    <mat-card-content>
+      <pre *ngIf="clip.format === TEXT_PLAIN"
+      [ngStyle]="{'max-width.%': 100, 'overflow-x': 'auto'}"><code *ngFor="let clipLine of clip.clipLines"> {{ clipLine }}
+</code></pre>
+      <div *ngIf="clip.format === IMAGE_PNG">
+        <img [src]="clip.dataURL" [ngStyle]="{'max-width.%': 100, 'overflow-x': 'auto'}">
+        <br/>
+        Size: {{ clip.width }} x {{ clip.height }}
+      </div>
+    </mat-card-content>
+    <mat-card-subtitle *ngIf="first; else nonFirst">
+      Current Clipboard Content
+      <mat-chip [style.float]="'right'"># {{i + 1}}</mat-chip>
+    </mat-card-subtitle>
+    <ng-template #nonFirst>
+      <mat-card-subtitle>
+        <button mat-icon-button *ngIf="!first" (click)="toggleFavorite(clip)"><mat-icon [color]="clip.favorite ? 'accent' : 'default'">star_rate</mat-icon></button>
+        <button mat-icon-button *ngIf="!first" (click)="makeCurrent(clip)"><mat-icon>share</mat-icon></button>
+        <button mat-icon-button *ngIf="!first" (click)="remove(clip)"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button *ngIf="!first && i > 1" (click)="moveUp(clip)"><mat-icon>keyboard_arrow_up</mat-icon></button>
+        <button mat-icon-button *ngIf="!first && !last" (click)="moveDown(clip)"><mat-icon>keyboard_arrow_down</mat-icon></button>
+        <mat-chip [style.float]="'right'"># {{i + 1}}</mat-chip>
+      </mat-card-subtitle>
+    </ng-template>
+  </mat-card>
+</div>

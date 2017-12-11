@@ -1,0 +1,54 @@
+.container {
+  position: absolute;
+  top: 7em;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+}
+
+.fixed-toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+mat-toolbar > i {
+  flex: 1 1 auto;
+}
+
+mat-toolbar > mat-select {
+  flex: 0;
+}
+
+.odd {
+  background-color: #f8f8f8;
+}
+
+mat-card-content > pre {
+  background-color: #fff;
+  border: 1px dotted #aaa;
+  padding: 1em;
+  counter-reset: line;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+mat-card-content > pre > code {
+  counter-increment: line;
+}
+
+mat-card-content > pre > code::before {
+  display: inline-block;
+  width: 3em;
+  text-align: right;
+  border-right: 1px solid #eee;
+  content: counter(line) " ";
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+mat-card-subtitle {
+  font-size: smaller;
+}
